@@ -2,7 +2,7 @@ api:"https://api.binance.com";
 endPoint:"/api/v1/";
 endPointOrder:"/api/v3/";
 //httpGet:{[api;endPoint;query] system "curl -X GET ",api,endPoint,query," --cacert C:\\Users\\samse\\Downloads\\curl\\cacert.pem"};
-//httpGet:{[api;endPoint;query] system "curl -X GET ",api,endPoint,query};
+httpGet:{[api;endPoint;query] system "curl -X GET ",api,endPoint,query};
 postProcess:{.j.k raze x}; // parsing JSON to kdb;
 //curl:{[query] system "curl -X GET ",query," --cacert C:\\Users\\samse\\Downloads\\curl\\cacert.pem"};
 curl:{[query] system "curl -X GET ",query};
@@ -13,7 +13,8 @@ timestamptoDT:{"p"$1970.01.01D00:00:00.000000000+x*1000000j};
 
 
 //daily change and max percentage change
-DailyChange:(postProcess httpGet[api;"/api/v1/ticker/";"24hr"]);
+//DailyChange:(postProcess httpGet[api;"/api/v1/ticker/";"24hr"]);
+DailyChange:postProcess curl["https://api.binance.com/api/v1/ticker/24hr"];
 ![`DailyChange;();0b;(`symbol`priceChange`priceChangePercent`weightedAvgPrice`prevClosePrice`lastPrice`lastQty`bidPrice`bidQty`askPrice`askQty`openPrice`highPrice`lowPrice`volume`quoteVolume`openTime`closeTime)!(($;enlist `;`symbol);($;"F";`priceChange);($;"F";`priceChangePercent);($;"F";`weightedAvgPrice);($;"F";`prevClosePrice);($;"F";`lastPrice);($;"F";`lastQty);($;"F";`bidPrice);($;"F";`bidQty);($;"F";`askPrice);($;"F";`askQty);($;"F";`openPrice);($;"F";`highPrice);($;"F";`lowPrice);($;"F";`volume);($;"F";`quoteVolume);($;"p";(+;1970.01.01D00:00:00.000000000;(*;`openTime;1000000j)));($;"p";(+;1970.01.01D00:00:00.000000000;(*;`closeTime;1000000j))))];
 //best btc to trade IE worst performer, check the graph and see if there is an opportunity
 
